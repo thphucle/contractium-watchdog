@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/contractium/smart-contracts.git"
+    "url": "git+https://github.com/thphucle/contractium-watchdog.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/contractium/smart-contracts/issues"
+    "url": "https://github.com/thphucle/contractium-watchdog/issues"
   },
-  "homepage": "https://github.com/contractium/smart-contracts#readme",
+  "homepage": "https://github.com/thphucle/contractium-watchdog/#readme",
   "devDependencies": {
     "sol-merger": "^0.1.2",
     "solidity-coverage": "^0.4.15",
