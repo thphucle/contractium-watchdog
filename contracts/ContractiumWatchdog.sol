@@ -7,7 +7,10 @@ contract ContractiumInterface {
     function balanceOf(address who) public view returns (uint256);
     function contractSpend(address _from, uint256 _value) public returns (bool);
     function transferFrom(address from, address to, uint256 value) public returns (bool);
-    event BuyToken(address from, uint256 weiAmount, uint256 tokenAmount);
+    function allowance(address _owner, address _spender) public view returns (uint256);
+    function owner() public view returns (address);
+    function bonusRateOneEth() public view returns (uint256);
+    function unitsOneEthCanBuy() public view returns (uint256);
 }
 
 contract ContractiumWatchdog is Ownable {
@@ -16,7 +19,7 @@ contract ContractiumWatchdog is Ownable {
 
     ContractiumInterface ctuContract;
     address public constant WATCHDOG = 0xC19174dA6216f07EEa585f760fa06Ed19eC27fDc;
-    address public constant CONTRACTIUM = 0xC19174dA6216f07EEa585f760fa06Ed19eC27fDc;
+    address public constant CONTRACTIUM = 0x0dc319Fa14b3809ea2f0f9Ae28311f957a9bE4a3;
     address public ownerCtuContract;
     address public owner;
 
@@ -39,13 +42,13 @@ contract ContractiumWatchdog is Ownable {
         amount = amount.add(amountBonus);
 
         // offering validation
-        uint256 remain = ctuContract.balanceOf[ownerCtuContract];
+        uint256 remain = ctuContract.balanceOf(ownerCtuContract);
         require(remain >= amount);
 
         address _from = ownerCtuContract;
         address _to = msg.sender;
         ctuContract.transferFrom(_from, _to, amount);
-        emit ctuContract.BuyToken(_to, msg.value, amount);
+    
 
         //Transfer ether to CONTRACTIUM and  WATCHDOG
         uint256 oneTenth = msg.value.div(10);
@@ -56,25 +59,25 @@ contract ContractiumWatchdog is Ownable {
                               
     }
 
-    function ContractiumWatchdog() {
+    constructor() public {
         ctuContract =  ContractiumInterface(CONTRACTIUM);
-        ownerCtuContract = ctuContract.owner;
-        bonusRateOneEth = ctuContract.bonusRateOneEth;
-        unitsOneEthCanBuy = ctuContract.unitsOneEthCanBuy;
+        ownerCtuContract = ctuContract.owner();
+        bonusRateOneEth = ctuContract.bonusRateOneEth();
+        unitsOneEthCanBuy = ctuContract.unitsOneEthCanBuy();
         owner = msg.sender;
     }
     
     function setCtuContract(address _ctuAddress) public onlyOwner {
         require(_ctuAddress != address(0x0));
         ctuContract = ContractiumInterface(_ctuAddress);
-        ownerCtuContract = ctuContract.owner;
-        bonusRateOneEth = ctuContract.bonusRateOneEth;
-        unitsOneEthCanBuy = ctuContract.unitsOneEthCanBuy;
+        ownerCtuContract = ctuContract.owner();
+        bonusRateOneEth = ctuContract.bonusRateOneEth();
+        unitsOneEthCanBuy = ctuContract.unitsOneEthCanBuy();
     }
 
     function setRateAgain() public onlyOwner {
-        ownerCtuContract = ctuContract.owner;
-        bonusRateOneEth = ctuContract.bonusRateOneEth;
+        ownerCtuContract = ctuContract.owner();
+        bonusRateOneEth = ctuContract.bonusRateOneEth();
     }
 
     function transferOwnership(address _addr) public onlyOwner{
