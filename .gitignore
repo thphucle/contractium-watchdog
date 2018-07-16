@@ -1,0 +1,11 @@
+build/
+node_modules/
+coverage/
+coverage.json
+configs/config.json
+yarn.lock
+Flattened.sol
+out/
+.vscode
+.DS_Store
+configs/.DS_Store
