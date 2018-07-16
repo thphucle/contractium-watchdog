@@ -1,0 +1,32 @@
+{
+  "name": "ctu-watchdog",
+  "version": "1.0.0",
+  "description": "Contractium.io",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-contracts": "sol-merger \"./contracts/*.sol\" ./out"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/contractium/smart-contracts.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/contractium/smart-contracts/issues"
+  },
+  "homepage": "https://github.com/contractium/smart-contracts#readme",
+  "devDependencies": {
+    "sol-merger": "^0.1.2",
+    "solidity-coverage": "^0.4.15",
+    "zeppelin-solidity": "1.10.0"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "1.10.0",
+    "truffle-hdwallet-provider-privkey": "^0.2.0"
+  }
+}
