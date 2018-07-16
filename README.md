@@ -13,7 +13,7 @@
 
 ## Verify contract
 1. Run `npm run build-contracts` to merge all contract sol files to a single file in `out/` directory.
-2. Copy code in `out/ContractiumToken.sol` file.
+2. Copy code in `out/ContractiumWatchdog.sol` file.
 3. Paste code verify contract page.
 4. Choose solidity compiler version: `v0.4.21+commit.dfe3193c`.
 5. Enable optimizer.
