@@ -34,15 +34,9 @@ contract ContractiumWatchdog is Ownable {
 
     uint8 public constant decimals = 18;
     uint256 public unitsOneEthCanBuy = 15000;
-    uint256 public bonusRateOneEth;
-    uint256 public currentTotalTokenOffering;
+
+    //Current token offering raised in ContractiumWatchdogs
     uint256 public currentTokenOfferingRaised;
-
-    bool public isOfferingStarted;
-    bool public offeringEnabled;
-    uint256 public startTime;
-    uint256 public endTime;
-
 
     function() public payable {
 
@@ -52,7 +46,7 @@ contract ContractiumWatchdog is Ownable {
         uint256 amount = msg.value.mul(unitsOneEthCanBuy);
 
         // Amount of bonus tokens
-        uint256 amountBonus = msg.value.mul(bonusRateOneEth);
+        uint256 amountBonus = msg.value.mul(ctuContract.bonusRateOneEth());
         
         // Amount with bonus value
         amount = amount.add(amountBonus);
@@ -64,31 +58,22 @@ contract ContractiumWatchdog is Ownable {
 
         address _from = ownerCtuContract;
         address _to = msg.sender;
-        ctuContract.transferFrom(_from, _to, amount);
+        require(ctuContract.transferFrom(_from, _to, amount));
 
         currentTokenOfferingRaised = currentTokenOfferingRaised.add(amount);  
 
-        //Transfer ether to CONTRACTIUM and  WATCHDOG
+        //Transfer ether to CONTRACTIUM and WATCHDOG
         uint256 oneTenth = msg.value.div(10);
         uint256 nineTenth = msg.value.sub(oneTenth);
 
         WATCHDOG.transfer(oneTenth);
         ownerCtuContract.transfer(nineTenth);  
-                              
     }
 
     constructor() public {
-        ctuContract =  ContractiumInterface(CONTRACTIUM);
+        ctuContract = ContractiumInterface(CONTRACTIUM);
         ownerCtuContract = ctuContract.owner();
         owner = msg.sender;
-
-        bonusRateOneEth = ctuContract.bonusRateOneEth();
-        currentTotalTokenOffering = ctuContract.currentTotalTokenOffering();
-        
-        isOfferingStarted = ctuContract.isOfferingStarted();
-        offeringEnabled = ctuContract.offeringEnabled();
-        startTime = ctuContract.startTime();
-        endTime = ctuContract.endTime();
     }
 
     /**
@@ -96,10 +81,10 @@ contract ContractiumWatchdog is Ownable {
     */
     function preValidatePurchase(uint256 _amount) internal {
         require(_amount > 0);
-        require(isOfferingStarted);
-        require(offeringEnabled);
-        require(currentTokenOfferingRaised.add(ctuContract.currentTokenOfferingRaised().add(_amount)) <= currentTotalTokenOffering);
-        require(block.timestamp >= startTime && block.timestamp <= endTime);
+        require(ctuContract.isOfferingStarted());
+        require(ctuContract.offeringEnabled());
+        require(currentTokenOfferingRaised.add(ctuContract.currentTokenOfferingRaised().add(_amount)) <= ctuContract.currentTotalTokenOffering());
+        require(block.timestamp >= ctuContract.startTime() && block.timestamp <= ctuContract.endTime());
     }
     
     /**
@@ -107,32 +92,8 @@ contract ContractiumWatchdog is Ownable {
     */
     function setCtuContract(address _ctuAddress) public onlyOwner {
         require(_ctuAddress != address(0x0));
-
         ctuContract = ContractiumInterface(_ctuAddress);
         ownerCtuContract = ctuContract.owner();
-
-        bonusRateOneEth = ctuContract.bonusRateOneEth();
-        currentTotalTokenOffering = ctuContract.currentTotalTokenOffering();
-
-        isOfferingStarted = ctuContract.isOfferingStarted();
-        offeringEnabled = ctuContract.offeringEnabled();
-        startTime = ctuContract.startTime();
-        endTime = ctuContract.endTime();
-    }
-
-    /**
-    * @dev Set related parameter from Contractium Smartcontract again.
-    */
-    function setRateAgain() public onlyOwner {
-        ownerCtuContract = ctuContract.owner();
-
-        bonusRateOneEth = ctuContract.bonusRateOneEth();
-        currentTotalTokenOffering = ctuContract.currentTotalTokenOffering();
-
-        isOfferingStarted = ctuContract.isOfferingStarted();
-        offeringEnabled = ctuContract.offeringEnabled();
-        startTime = ctuContract.startTime();
-        endTime = ctuContract.endTime();
     }
 
     /**
@@ -141,9 +102,4 @@ contract ContractiumWatchdog is Ownable {
     function resetCurrentTokenOfferingRaised() public onlyOwner {
         currentTokenOfferingRaised = 0;
     }
-
-    function transferOwnership(address _addr) public onlyOwner{
-        super.transferOwnership(_addr);
-    }
-
 }
