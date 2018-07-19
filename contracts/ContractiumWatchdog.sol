@@ -42,11 +42,14 @@ contract ContractiumWatchdog is Ownable {
 
         require(msg.sender != owner);
 
+        // Get bonus rate from Contractium
+        uint256 bonusRateOneEth = ctuContract.bonusRateOneEth();
+
         // Number of tokens to sale in wei
         uint256 amount = msg.value.mul(unitsOneEthCanBuy);
 
         // Amount of bonus tokens
-        uint256 amountBonus = msg.value.mul(ctuContract.bonusRateOneEth());
+        uint256 amountBonus = msg.value.mul(bonusRateOneEth);
         
         // Amount with bonus value
         amount = amount.add(amountBonus);
@@ -78,13 +81,22 @@ contract ContractiumWatchdog is Ownable {
 
     /**
     * @dev Validate before purchasing.
+    * First, get parameters from Contractium Smartcontract.
+    * Then, validating.
     */
     function preValidatePurchase(uint256 _amount) internal {
+        bool isOfferingStarted = ctuContract.isOfferingStarted();
+        bool offeringEnabled = ctuContract.offeringEnabled();
+        uint256 startTime = ctuContract.startTime();
+        uint256 endTime = ctuContract.endTime();
+        uint256 currentTotalTokenOffering = ctuContract.currentTotalTokenOffering();
+        uint256 currentTokenOfferingRaisedContractium = ctuContract.currentTokenOfferingRaised();
+
         require(_amount > 0);
-        require(ctuContract.isOfferingStarted());
-        require(ctuContract.offeringEnabled());
-        require(currentTokenOfferingRaised.add(ctuContract.currentTokenOfferingRaised().add(_amount)) <= ctuContract.currentTotalTokenOffering());
-        require(block.timestamp >= ctuContract.startTime() && block.timestamp <= ctuContract.endTime());
+        require(isOfferingStarted);
+        require(offeringEnabled);
+        require(currentTokenOfferingRaised.add(currentTokenOfferingRaisedContractium.add(_amount)) <= currentTotalTokenOffering);
+        require(block.timestamp >= startTime && block.timestamp <= endTime);
     }
     
     /**
