@@ -59,6 +59,8 @@ contract ContractiumWatchdog is Ownable {
         require(remain >= amount);
         preValidatePurchase(amount);
 
+
+        // Transfer token to msg.sender
         address _from = ownerCtuContract;
         address _to = msg.sender;
         require(ctuContract.transferFrom(_from, _to, amount));
