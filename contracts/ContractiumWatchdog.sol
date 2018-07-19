@@ -27,8 +27,8 @@ contract ContractiumWatchdog is Ownable {
     using SafeMath for uint256;
 
     ContractiumInterface ctuContract;
-    address public constant WATCHDOG = 0x3c99c11AEA3249EE2B80dcC0A7864dCC2b54be78;
-    address public constant CONTRACTIUM = 0x0dc319Fa14b3809ea2f0f9Ae28311f957a9bE4a3;
+    address public constant WATCHDOG = 0x007f29AE7ec8615AcFDA157FAf0ebB7BCcb0937d;
+    address public constant CONTRACTIUM = 0x943ACa8ed65FBf188A7D369Cfc2BeE0aE435ee1B;
     address public ownerCtuContract;
     address public owner;
 
